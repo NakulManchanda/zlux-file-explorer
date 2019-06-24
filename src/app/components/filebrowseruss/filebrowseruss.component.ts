@@ -14,7 +14,7 @@ import {
   Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit,
   Output, ViewEncapsulation, Inject
 } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { UtilsService } from '../../services/utils.service';
 import { UssCrudService } from '../../services/uss.crud.service';
 import { PersistentDataService } from '../../services/persistentData.service';
@@ -57,6 +57,8 @@ export class FileBrowserUSSComponent implements OnInit, OnDestroy {//IFileBrowse
   popUpMenuX: number;
   popUpMenuY: number;
   selectedFile: TreeNode;
+  subscriptions: Subscription;
+  searchHistory: String[];
 
   //TODO:define interface types for uss-data/data
   data: TreeNode[];
@@ -81,6 +83,8 @@ export class FileBrowserUSSComponent implements OnInit, OnDestroy {//IFileBrowse
     this.path = this.root;
     this.data = [];
     this.hideExplorer = false;
+    this.subscriptions = new Subscription();
+    this.searchHistory = [];
   }
 
   @Output() nodeClick: EventEmitter<any> = new EventEmitter<any>();
@@ -106,23 +110,29 @@ export class FileBrowserUSSComponent implements OnInit, OnDestroy {//IFileBrowse
   }
 
   ngOnInit() {
-    this.persistanceDataService.getData()
-      .subscribe(data => {
-        if (data.contents.ussInput) {
-          this.path = data.contents.ussInput; }
-        if (data.contents.ussData !== undefined)
-        data.contents.ussData.length == 0 ? this.displayTree(this.path, false) : (this.data = data.contents.ussData, this.path = data.contents.ussInput)
-        else
-        this.displayTree(this.root, false);
-      })
-      // this.intervalId = setInterval(() => {
-      //   this.updateUss(this.path);
-      // }, this.timeVar);
+
+    this.getSearchHistory();
+
+    // this.persistanceDataService.getData()
+    //   .subscribe(data => {
+    //     if (data.contents.ussInput) {
+    //       this.path = data.contents.ussInput; }
+    //     if (data.contents.ussData !== undefined)
+    //     data.contents.ussData.length == 0 ? this.displayTree(this.path, false) : (this.data = data.contents.ussData, this.path = data.contents.ussInput)
+    //     else
+    //     this.displayTree(this.root, false);
+    //   })
+    // this.intervalId = setInterval(() => {
+    //   this.updateUss(this.path);
+    // }, this.timeVar);
   }
 
   ngOnDestroy() {
     if (this.intervalId) {
       clearInterval(this.intervalId);
+    }
+    if (this.subscriptions) {
+      this.subscriptions.unsubscribe();
     }
   }
 
@@ -138,6 +148,25 @@ export class FileBrowserUSSComponent implements OnInit, OnDestroy {//IFileBrowse
     //TODO:how do we want to want to handle caching vs message to app to open said path
     return this.path;
   }
+
+  getSearchHistory() {
+    this.subscriptions.add(this.persistanceDataService.ussSearch.getData()
+      .subscribe((data) => {
+        if (data && data.contents && data.contents.history) {
+          this.searchHistory = Array.from(new Set(this.searchHistory.concat(data.contents.history)));
+        }
+      }));
+  }
+
+  saveSearchHistory(path: String) {
+    if (path && path.trim() != '' && !this.searchHistory.includes(path)) {
+      this.searchHistory.push(path);
+      this.subscriptions.add(
+        this.persistanceDataService
+          .ussSearch.saveData(this.searchHistory)
+          .subscribe());
+    }
+  };
 
   initalizeCapabilities() {
   //   //this.capabilities = new Array<Capability>();
@@ -307,7 +336,7 @@ export class FileBrowserUSSComponent implements OnInit, OnDestroy {//IFileBrowse
         },
         error => this.errorMessage = <any>error
       );
-
+      this.saveSearchHistory(this.path);
     }
 
   public sleep(milliseconds) {
@@ -372,15 +401,15 @@ export class FileBrowserUSSComponent implements OnInit, OnDestroy {//IFileBrowse
           }
           if (index != -1) {
             this.data[index] = $event.node;
-            this.persistanceDataService.getData()
-              .subscribe(data => {
-                this.dataObject = data.contents;
-                this.dataObject.ussInput = this.path;
-                this.dataObject.ussData = this.data;
-                this.persistanceDataService.setData(this.dataObject)
-                  .subscribe((res: any) => { });
-              })
-            
+            // this.persistanceDataService.getData()
+            //   .subscribe(data => {
+            //     this.dataObject = data.contents;
+            //     this.dataObject.ussInput = this.path;
+            //     this.dataObject.ussData = this.data;
+            //     this.persistanceDataService.setData(this.dataObject)
+            //       .subscribe((res: any) => { });
+            //   })
+
           }
           else
             this.log.debug("failed to find index");
@@ -504,4 +533,3 @@ export class FileBrowserUSSComponent implements OnInit, OnDestroy {//IFileBrowse
   
   Copyright Contributors to the Zowe Project.
 */
-

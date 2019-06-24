@@ -12,7 +12,7 @@
 
 
 import { Component, ElementRef, OnInit, ViewEncapsulation, OnDestroy, Input, EventEmitter, Output, Inject } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 //import {ComponentClass} from '../../../../../../zlux-platform/interface/src/registry/classes';
 import { FileService } from '../../services/file.service';
 import { childEvent } from '../../structures/child-event';
@@ -47,6 +47,8 @@ export class FileBrowserMVSComponent implements OnInit, OnDestroy {//IFileBrowse
   //TODO:define interface types for mvs-data/data
   data: any;
   dsData: Observable<any>;
+  subscriptions: Subscription;
+  searchHistory: String[];
 
   constructor(private fileService: FileService, 
     private elementRef:ElementRef, 
@@ -57,29 +59,39 @@ export class FileBrowserMVSComponent implements OnInit, OnDestroy {//IFileBrowse
     this.path = "";
     this.rtClickDisplay = false;
     this.hideExplorer = false;
+    this.subscriptions = new Subscription();
+    this.searchHistory = [];
   }
   @Input() style: any;
   @Output() pathChanged: EventEmitter<any> = new EventEmitter<any>();
 
   ngOnInit() {
 
-    this.persistantDataService.getData()
-      .subscribe(data => {
-        if(data.contents.mvsInput){
-          this.path = data.contents.mvsInput;
-        }
-        data.contents.mvsData.length == 0 ? this.updateDs() : (this.data = data.contents.mvsData, this.path = data.contents.mvsInput)
-      }
-    )
-    this.intervalId = setInterval(() => {
-      this.updateDs();
-    }, this.timeVar);
+    this.getSearchHistory();
+    // this.persistantDataService.getData()
+    //   .subscribe(data => {
+    //     if (data.contents.mvsInput) {
+    //       this.path = data.contents.mvsInput;
+    //     }
+    //     data.contents.mvsData.length == 0 ? this.updateDs() : (this.data = data.contents.mvsData, this.path = data.contents.mvsInput)
+    //   }
+    //   )
+
+
+    // this.intervalId = setInterval(() => {
+    //   this.updateDs();
+    // }, this.timeVar);
+
     this.updateDs();
   }
 
   ngOnDestroy(){
     if (this.intervalId) {
       clearInterval(this.intervalId);
+    }
+
+    if (this.subscriptions) {
+      this.subscriptions.unsubscribe();
     }
   }
 
@@ -146,21 +158,42 @@ export class FileBrowserMVSComponent implements OnInit, OnDestroy {//IFileBrowse
         }
         this.data = temp;
 
-        let dataObject:MvsDataObject;
-        this.persistantDataService.getData()
-          .subscribe(data => {
-            dataObject = data.contents;
-            dataObject.mvsInput = this.path;
-            dataObject.mvsData = this.data;
-            //this.log.debug(JSON.stringify(dataObject));
-            this.persistantDataService.setData(dataObject)
-              .subscribe((res: any) => { });
-          })
+        // let dataObject: MvsDataObject;
+        // this.persistantDataService.getData()
+        //   .subscribe(data => {
+        //     dataObject = data.contents;
+        //     dataObject.mvsInput = this.path;
+        //     dataObject.mvsData = this.data;
+        //     //this.log.debug(JSON.stringify(dataObject));
+        //     this.persistantDataService.setData(dataObject)
+        //       .subscribe((res: any) => { });
+        //   })
 
       },
       error => this.errorMessage = <any>error
     );
+
+    this.saveSearchHistory(this.path);
   }
+
+  getSearchHistory() {
+    this.subscriptions.add(this.persistantDataService.mvsSearch.getData()
+      .subscribe((data) => {
+        if (data && data.contents && data.contents.history) {
+          this.searchHistory = Array.from(new Set(this.searchHistory.concat(data.contents.history)));
+        }
+      }));
+  }
+
+  saveSearchHistory(path: String) {
+    if (path && path.trim() != '' && !this.searchHistory.includes(path)) {
+      this.searchHistory.push(path);
+      this.subscriptions.add(
+        this.persistantDataService
+          .mvsSearch.saveData(this.searchHistory)
+          .subscribe());
+    }
+  };
 
 
 /**

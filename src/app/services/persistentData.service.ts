@@ -16,6 +16,7 @@ import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import { Angular2InjectionTokens } from 'pluginlib/inject-resources';
+import { SearchHistory } from '../structures/search-history';
 
 @Injectable()
 export class PersistentDataService {
@@ -23,11 +24,25 @@ export class PersistentDataService {
     private scope: string = "instance";
     private resourcePath: string = "persistance";
     private fileName: string = "zlux-file-explorer.json"
-    
+
+    private mvsSearchObj: SearchHistory;
+    private ussSearchObj: SearchHistory;
+
     constructor(private http: Http,
         @Inject(Angular2InjectionTokens.PLUGIN_DEFINITION) private pluginDefinition: ZLUX.ContainerPluginDefinition,
 
-    ) { }
+  ) {
+    this.mvsSearchObj = new SearchHistory(this.pluginDefinition.getBasePlugin(), 'mvs', this.http);
+    this.ussSearchObj = new SearchHistory(this.pluginDefinition.getBasePlugin(), 'uss', this.http);
+  }
+
+  public get mvsSearch() {
+    return this.mvsSearchObj;
+  }
+
+  public get ussSearch() {
+    return this.ussSearchObj;
+  }
 
     public setData(params: any): Observable<any> {
 
