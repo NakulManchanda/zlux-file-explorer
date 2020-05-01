@@ -14,7 +14,7 @@ import { MAT_DIALOG_DATA } from '@angular/material';
 @Component({
   selector: 'file-properties-modal',
   templateUrl: './file-properties-modal.component.html',
-  styleUrls: ['./file-properties-modal.component.scss']
+  styleUrls: ['./file-properties-modal.component.css']
 })
 export class FilePropertiesModal implements OnInit {
 

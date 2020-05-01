@@ -25,6 +25,7 @@ import { ContextMenuModule, TreeModule, MenuItem, MenuModule, DialogModule } fro
 import { TreeComponent } from '../../components/tree/tree.component';
 import { UtilsService } from '../../services/utils.service';
 import { MvsDataObject, UssDataObject } from '../../structures/persistantdata';
+import { TabbingComponent } from '../tabbing/tabbing.component';
 // import {FileContents} from '../../structures/filecontents';
 import { tab } from '../../structures/tab';
 //import {ComponentClass} from '../../../../../../zlux-platform/interface/src/registry/classes';
@@ -44,7 +45,7 @@ import { FilePropertiesModal } from '../file-properties-modal/file-properties-mo
 import { DeleteFileModal } from '../delete-file-modal/delete-file-modal.component';
 import { CreateFolderModal } from '../create-folder-modal/create-folder-modal.component';
 import { MatDialogModule, MatTableModule, MatSnackBarModule, MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatCheckboxModule, MatButtonModule, MatButtonToggleModule } from '@angular/material';
-import { DatasetPropertiesModal } from '@zlux/file-explorer/src/app/components/dataset-properties-modal/dataset-properties-modal.component';
+import { DatasetPropertiesModal } from '../dataset-properties-modal/dataset-properties-modal.component';
 
 @Component({
   selector: 'zlux-file-explorer',
@@ -247,7 +248,8 @@ export class ZluxFileExplorerComponent implements OnInit, OnDestroy {
     DatasetPropertiesModal,
     DeleteFileModal,
     CreateFolderModal,
-    TreeComponent],
+    TreeComponent,
+    TabbingComponent],
   imports: [
     CommonModule, 
     FormsModule, 
@@ -267,7 +269,7 @@ export class ZluxFileExplorerComponent implements OnInit, OnDestroy {
     MatButtonToggleModule
   ],
   exports: [ZluxFileExplorerComponent],
-  entryComponents: [ZluxFileExplorerComponent, FilePropertiesModal, DatasetPropertiesModal, DeleteFileModal, CreateFolderModal],
+  entryComponents: [ZluxFileExplorerComponent, FilePropertiesModal, DatasetPropertiesModal, DeleteFileModal, CreateFolderModal, TabbingComponent],
 })
 export class ZluxFileExplorerModule { }
 

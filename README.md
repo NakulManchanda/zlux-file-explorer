@@ -30,6 +30,37 @@ Now, in your application's HTML file, given they are within the scope of your mo
 with an optional (style) input to specify the color, size, or other properties of the main tree container.
 
 
+## Link locally with zlux-editor for local development      
+
+### Part I- How to link
+
+#### Add npm symlink 
+Note: @zlux/file-explorer is package name in package.json
+```
+cd zlux-file-explorer
+npm link 
+```
+#### Replace dependency in zlux-editor
+```
+cd zlux-editor/webClient
+npm link @zlux/file-explorer
+```
+
+### Part II - Back to normal, how to delink
+
+#### Remove Dependecy link
+```
+cd zlux-editor/webClient
+npm unlink
+```
+
+#### Delete npm symlink
+
+```
+cd zlux-file-explorer
+npm uninstall
+```
+
 This program and the accompanying materials are
 made available under the terms of the Eclipse Public License v2.0 which accompanies
 this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html

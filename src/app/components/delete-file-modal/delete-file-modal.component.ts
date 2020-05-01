@@ -8,19 +8,19 @@
   
   Copyright Contributors to the Zowe Project.
 */
-import { Component, Inject, EventEmitter } from '@angular/core';
+import { Component, Inject, EventEmitter, Output } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'delete-file-modal',
   templateUrl: './delete-file-modal.component.html',
-  styleUrls: ['./delete-file-modal.component.scss']
+  styleUrls: ['./delete-file-modal.component.css']
 })
 export class DeleteFileModal {
 
   private fileName = '';
   private fileIcon = '';
-  onDelete = new EventEmitter();
+  public onDelete = new EventEmitter();
   private node: any;
 
   constructor(
