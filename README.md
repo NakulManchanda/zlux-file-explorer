@@ -61,6 +61,13 @@ cd zlux-file-explorer
 npm uninstall
 ```
 
+### node-sass vendor folder not found
+if experience this issue
+```
+node node_modules/node-sass/scripts/install.js
+npm rebuild node-sass
+```
+
 This program and the accompanying materials are
 made available under the terms of the Eclipse Public License v2.0 which accompanies
 this distribution, and is available at https://www.eclipse.org/legal/epl-v20.html
