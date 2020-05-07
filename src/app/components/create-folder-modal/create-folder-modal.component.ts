@@ -14,7 +14,7 @@ import { MAT_DIALOG_DATA } from '@angular/material';
 @Component({
   selector: 'create-folder-modal',
   templateUrl: './create-folder-modal.component.html',
-  styleUrls: ['./create-folder-modal.component.css']
+  styleUrls: ['./create-folder-modal.component.scss']
 })
 export class CreateFolderModal {
 

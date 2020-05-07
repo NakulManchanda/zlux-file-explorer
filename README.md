@@ -48,7 +48,7 @@ npm link @zlux/file-explorer
 
 ### Part II - Back to normal, how to delink
 
-#### Remove Dependecy link
+#### Remove Dependency link
 ```
 cd zlux-editor/webClient
 npm unlink

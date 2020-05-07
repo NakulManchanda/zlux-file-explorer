@@ -14,7 +14,7 @@ import { MAT_DIALOG_DATA } from '@angular/material';
 @Component({
   selector: 'dataset-properties-modal',
   templateUrl: './dataset-properties-modal.component.html',
-  styleUrls: ['./dataset-properties-modal.component.css']
+  styleUrls: ['./dataset-properties-modal.component.scss']
 })
 export class DatasetPropertiesModal implements OnInit {
 
