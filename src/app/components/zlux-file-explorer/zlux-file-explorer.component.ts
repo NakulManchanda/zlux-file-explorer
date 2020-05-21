@@ -25,7 +25,8 @@ import { ContextMenuModule, TreeModule, MenuItem, MenuModule, DialogModule } fro
 import { TreeComponent } from '../../components/tree/tree.component';
 import { UtilsService } from '../../services/utils.service';
 import { MvsDataObject, UssDataObject } from '../../structures/persistantdata';
-import { TabbingComponent } from '../tabbing/tabbing.component';
+import { ZluxTabbingModule } from '@zlux/widgets';
+
 // import {FileContents} from '../../structures/filecontents';
 import { tab } from '../../structures/tab';
 //import {ComponentClass} from '../../../../../../zlux-platform/interface/src/registry/classes';
@@ -249,7 +250,7 @@ export class ZluxFileExplorerComponent implements OnInit, OnDestroy {
     DeleteFileModal,
     CreateFolderModal,
     TreeComponent,
-    TabbingComponent],
+    ],
   imports: [
     CommonModule, 
     FormsModule, 
@@ -266,10 +267,11 @@ export class ZluxFileExplorerComponent implements OnInit, OnDestroy {
     MatListModule,
     MatCheckboxModule,
     MatButtonModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    ZluxTabbingModule
   ],
   exports: [ZluxFileExplorerComponent],
-  entryComponents: [ZluxFileExplorerComponent, FilePropertiesModal, DatasetPropertiesModal, DeleteFileModal, CreateFolderModal, TabbingComponent],
+  entryComponents: [ZluxFileExplorerComponent, FilePropertiesModal, DatasetPropertiesModal, DeleteFileModal, CreateFolderModal],
 })
 export class ZluxFileExplorerModule { }
 
